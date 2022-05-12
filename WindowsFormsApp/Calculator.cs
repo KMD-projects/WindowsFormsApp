@@ -42,9 +42,20 @@ namespace WindowsFormsApp
 
         private void btnDivision_Click(object sender, EventArgs e)
         {
-            GetInput();
-            result = firstNum / secondNum;
-            PrintResult();
+            try
+            {
+                bool success = GetInput();
+
+                if (!success) return;
+
+                if (secondNum == 0) throw new DivideByZeroException();
+                
+                result = firstNum / secondNum;
+                PrintResult();
+            } catch (DivideByZeroException ex)
+            {
+                MessageBox.Show("Cannot divide by zero.");
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -52,15 +63,17 @@ namespace WindowsFormsApp
             Close();
         }
 
-        private void GetInput()
+        private bool GetInput()
         {
             try
             {
                 firstNum = Convert.ToDouble(txtFirstNumber.Text);
                 secondNum = Convert.ToDouble(txtSecondNumber.Text);
-            } catch(Exception)
+                return true;
+            } catch(FormatException)
             {
-
+                MessageBox.Show("Invalid numbers.");
+                return false;
             }
         }
 
